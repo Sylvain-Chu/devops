@@ -1,0 +1,37 @@
+services:
+  backtp1:
+    build: "backend"
+    container_name: backtp1
+    environment:
+      - URL=${URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - my-network
+    depends_on:
+      - tp1db
+
+  tp1db:
+    build: "db"
+    container_name: tp1db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - my-network
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  httptp1:
+    build: "http"
+    container_name: httptp1
+    ports:
+      - "80:80"
+    networks:
+      - my-network
+    depends_on:
+      - backtp1
+
+networks:
+    my-network:

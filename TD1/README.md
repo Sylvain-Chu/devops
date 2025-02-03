@@ -100,3 +100,229 @@ COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
 ENTRYPOINT ["java", "-jar", "myapp.jar"]
 
 ```
+
+## 1-5 Why do we need a reverse proxy?
+
+- **sécurité** : SSL
+- **haute disponibilité** : répartition de la charge
+- **authentification/autorisation centralisée** : un serveur pour toutes les applications
+
+---
+
+## 1-6 Why is docker-compose so important?
+
+**Docker Compose** est un outil qui facilite la gestion de plusieurs conteneurs Docker. Voici pourquoi il est important :
+
+- **Orchestration facile** : Il permet de gérer facilement plusieurs conteneurs, de leur démarrage à leur arrêt, en utilisant un seul fichier de configuration (`docker-compose.yml`). Cela simplifie grandement le déploiement de projets multi-conteneurs.
+  
+- **Gestion de configurations** : Docker Compose permet de définir les configurations de chaque service (base de données, API, frontend, etc.) dans un même fichier, avec des variables d'environnement et des volumes. Cela rend les déploiements cohérents, reproductibles et faciles à configurer.
+  
+- **Automatisation** : En combinant plusieurs services dans un fichier `docker-compose.yml`, on peut automatiser des tâches comme la construction des images, le démarrage des conteneurs, le nettoyage des volumes, etc., avec une seule commande.
+  
+- **Simplicité** : Grâce à Compose, il est plus facile de travailler en équipe sur des projets complexes qui impliquent plusieurs conteneurs. Chaque membre peut travailler avec la même configuration sans avoir à gérer des commandes Docker complexes.
+
+---
+
+## 1-7 Document docker-compose most important commands.
+
+### Commandes Docker Compose les plus importantes :
+
+- **`docker-compose up`** : Cette commande démarre tous les services définis dans le fichier `docker-compose.yml`. Elle crée et démarre les conteneurs en fonction de la configuration du fichier. L'option `-d` permet de démarrer les conteneurs en arrière-plan (mode détaché).
+  
+  ```bash
+  docker-compose up -d
+  ```
+
+- **`docker-compose down`** : Cette commande arrête et supprime tous les conteneurs, réseaux et volumes associés au projet. Cela permet de nettoyer l'environnement de travail.
+  
+  ```bash
+  docker-compose down
+  ```
+
+- **`docker-compose build`** : Permet de reconstruire les images des services définis dans le fichier `docker-compose.yml`. Cela est utile lorsque les Dockerfiles ou les fichiers associés ont été modifiés.
+  
+  ```bash
+  docker-compose build
+  ```
+
+- **`docker-compose logs`** : Affiche les logs de tous les conteneurs ou d'un conteneur spécifique dans le projet Docker Compose.
+  
+  ```bash
+  docker-compose logs
+  ```
+
+- **`docker-compose exec <service> <command>`** : Exécute une commande dans un conteneur en cours d'exécution d'un service spécifié.
+  
+  ```bash
+  docker-compose exec backend bash
+  ```
+
+- **`docker-compose ps`** : Affiche l'état des conteneurs gérés par Docker Compose, y compris leurs ID et leurs ports associés.
+  
+  ```bash
+  docker-compose ps
+  ```
+
+- **`docker-compose restart`** : Redémarre les services définis dans le fichier `docker-compose.yml`.
+  
+  ```bash
+  docker-compose restart
+  ```
+
+---
+
+## 1-8 Document your docker-compose file.
+
+### Description de ton fichier `docker-compose.yml` :
+
+Le fichier `docker-compose.yml` ci-dessous définit et configure plusieurs services pour ton application :
+
+```yaml
+# Définition des services
+services:
+  
+  # Service backend : responsable de l'application backend
+  backtp1:
+    # Spécifie le répertoire contenant le Dockerfile pour construire l'image du backend
+    build: "backend"
+    # Nom du conteneur pour ce service
+    container_name: backtp1
+    # Variables d'environnement pour configurer l'application backend
+    environment:
+      - URL=${URL} # URL de connexion à la base de données
+      - POSTGRES_USER=${POSTGRES_USER} # Utilisateur de la base de données
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Mot de passe de la base de données
+    # Réseau sur lequel le service va être connecté
+    networks:
+      - my-network
+    # Dépendance du backend au service tp1db (la base de données)
+    depends_on:
+      - tp1db
+
+  # Service base de données PostgreSQL : responsable de la gestion des données
+  tp1db:
+    # Spécifie le répertoire contenant le Dockerfile pour construire l'image de la base de données
+    build: "db"
+    # Nom du conteneur pour ce service
+    container_name: tp1db
+    # Variables d'environnement pour configurer PostgreSQL
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB} # Nom de la base de données à créer
+      - POSTGRES_USER=${POSTGRES_USER} # Utilisateur de la base de données
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Mot de passe de l'utilisateur
+    # Réseau sur lequel le service va être connecté
+    networks:
+      - my-network
+    # Volume pour persister les données de la base de données
+    volumes:
+      - ./db/data:/var/lib/postgresql/data # Persistance des données dans ./db/data
+
+  # Service frontend : responsable de l'interface utilisateur de l'application
+  httptp1:
+    # Spécifie le répertoire contenant le Dockerfile pour construire l'image du frontend
+    build: "http"
+    # Nom du conteneur pour ce service
+    container_name: httptp1
+    # Mapping des ports : le conteneur expose le port 80, accessible sur l'hôte via le port 80
+    ports:
+      - "80:80"
+    # Réseau sur lequel le service va être connecté
+    networks:
+      - my-network
+    # Dépendance du frontend au service backtp1 (le backend)
+    depends_on:
+      - backtp1
+
+# Définition des réseaux
+networks:
+  # Définition du réseau my-network utilisé par les services
+  my-network:
+    # Utilisation du driver bridge pour permettre la communication entre les services
+    driver: bridge
+```
+
+### Explication des services :
+1. **Backend** : 
+   - Ce service construit une image à partir du Dockerfile dans le répertoire `./backend`.
+   - Il expose le port `8080` pour que l'API soit accessible.
+   - Il se connecte à la base de données `database` via l'URL fournie dans les variables d'environnement.
+
+2. **Database** : 
+   - Ce service construit une image à partir du Dockerfile dans le répertoire `./database` et configure PostgreSQL avec les variables d'environnement fournies.
+   - Il initialise la base de données à partir des scripts SQL présents dans le dossier `./database/init-scripts`.
+
+3. **Frontend** : 
+   - Ce service construit une image à partir du Dockerfile dans le répertoire `./frontend`.
+   - Il expose le port `80` et le mappe au port `8081` de l'hôte pour rendre l'application frontend accessible.
+
+### Réseau :
+- Tous les services sont connectés au même réseau Docker (`app-network`), ce qui permet aux services de communiquer entre eux à l'aide de leurs noms de service (`backend`, `database`, etc.).
+
+
+### 1-9 Documenter les commandes de publication et les images publiées sur Docker Hub
+
+#### Commandes pour publier l'image Docker
+
+1. **Se connecter à Docker Hub :**
+
+   Pour se connecter à Docker Hub et pouvoir publier des images, il faut d'abord exécuter la commande suivante dans le terminal :
+
+   ```bash
+   docker login
+   ```
+
+   Cette commande te demandera ton nom d'utilisateur et ton mot de passe Docker Hub pour t'authentifier.
+
+2. **Taguer ton image avec des informations de version :**
+
+   Une fois que ton image est construite, tu dois la taguer avec un nom et une version avant de la publier sur Docker Hub. Par exemple, si ton image s'appelle `my-database` et que tu veux la taguer avec la version `1.0`, tu exécutes cette commande :
+
+   ```bash
+   docker tag my-database USERNAME/my-database:1.0
+   ```
+
+   Remplace `USERNAME` par ton nom d'utilisateur Docker Hub (par exemple `sylvainchu`) et assure-toi que l'image que tu veux taguer existe localement (dans ce cas `my-database`).
+
+3. **Pousser l'image sur Docker Hub :**
+
+   Ensuite, pour pousser ton image vers Docker Hub, tu utilises la commande suivante :
+
+   ```bash
+   docker push USERNAME/my-database:1.0
+   ```
+
+   Cette commande va envoyer l'image taguée vers Docker Hub, sous le dépôt `USERNAME/my-database` avec le tag `1.0`.
+
+#### Image publiée sur Docker Hub
+
+Après avoir poussé l'image, elle sera disponible dans ton compte Docker Hub sous l'URL suivante (en remplaçant `USERNAME` par ton nom d'utilisateur et `my-database` par le nom de l'image) :
+
+```
+https://hub.docker.com/r/USERNAME/my-database/tags
+```
+
+---
+
+### 1-10 Pourquoi met-on nos images dans un dépôt en ligne ?
+
+Mettre nos images Docker dans un dépôt en ligne comme Docker Hub ou un dépôt privé présente plusieurs avantages :
+
+1. **Partage facile avec les équipes :**
+   - Les images publiées sont accessibles depuis n'importe quel endroit, ce qui permet à d'autres membres de l'équipe ou à des utilisateurs externes de récupérer rapidement l'image et de l'utiliser sans avoir à la construire eux-mêmes.
+
+2. **Centralisation des images :**
+   - Un dépôt en ligne centralise toutes les images Docker, ce qui permet de garder une trace des différentes versions et de gérer les mises à jour de manière cohérente.
+
+3. **Accès à des images publiques :**
+   - Docker Hub est un dépôt public, ce qui signifie que des milliers d'images publiques sont disponibles, permettant de gagner du temps et d'éviter de reconstruire des images courantes.
+
+4. **Sauvegarde et gestion des versions :**
+   - Lorsque les images sont stockées sur Docker Hub, elles sont protégées par une sauvegarde en ligne, ce qui évite la perte des images locales. De plus, tu peux gérer les versions de tes images et publier des mises à jour sans perdre les anciennes versions.
+
+5. **Facilite l'intégration continue :**
+   - Dans des systèmes d'intégration continue (CI/CD), il est essentiel de pouvoir récupérer des images de manière automatisée depuis un dépôt en ligne pour les utiliser dans des pipelines de tests ou de déploiement.
+
+6. **Accessibilité à distance :**
+   - Les images sont accessibles depuis n'importe quel ordinateur ou serveur qui a Docker installé, ce qui permet de les utiliser sur différentes machines ou dans des environnements de production à distance.
+
+En résumé, publier tes images Docker sur un dépôt en ligne comme Docker Hub permet une meilleure collaboration, une gestion simplifiée des versions, et une intégration plus facile avec les autres services ou équipes.
