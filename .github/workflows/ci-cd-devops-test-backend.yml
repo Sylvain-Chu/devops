@@ -29,10 +29,10 @@ jobs:
           cd TD1/backend  # Navigate to the backend directory
           mvn clean install  # Clean the project and install dependencies, run tests
 
-    if: failure()
-    steps:
-      - name: Fail the workflow
-        run: exit 1
+    # if: failure()
+    # steps:
+    #   - name: Fail the workflow
+    #     run: exit 1
 
 
   build:
