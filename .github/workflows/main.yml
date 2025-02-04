@@ -9,23 +9,23 @@
 
 # jobs:
 #   # Job to test the backend
-#   test-backend:
-#     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
+  test-backend:
+    runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
 
-#     steps:
-#       - name: Checkout repository  # Checkout the code from the repository
-#         uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository  # Checkout the code from the repository
+        uses: actions/checkout@v4
 
-#       - name: Set up JDK 21  # Set up Java Development Kit (JDK) version 21 with 'corretto' distribution
-#         uses: actions/setup-java@v3
-#         with:
-#           distribution: 'corretto'
-#           java-version: '21'
+      - name: Set up JDK 21  # Set up Java Development Kit (JDK) version 21 with 'corretto' distribution
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '21'
 
-#       - name: Build and test with Maven  # Build and test the backend code using Maven
-#         run: |
-#           cd TD1/backend  # Navigate to the backend directory
-#           mvn clean install  # Clean the project and install dependencies, run tests
+      - name: Build and test with Maven  # Build and test the backend code using Maven
+        run: |
+          cd TD1/backend  # Navigate to the backend directory
+          mvn clean install  # Clean the project and install dependencies, run tests
 
 #   # Job to build and push Docker images
 #   build-and-push-docker-images:
