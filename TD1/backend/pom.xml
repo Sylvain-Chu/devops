@@ -9,14 +9,14 @@
 	</parent>
 	<groupId>fr.takima.training</groupId>
 	<artifactId>simple-api</artifactId>
-	<version>0.0.16</version>
+	<version>0.0.15</version>
 	<name>simple-api</name>
 	<description>Simple API demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>21</java.version>
 		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-		<testcontainers.version>1.20.4</testcontainers.version>
+		<testcontagitiners.version>1.20.4</testcontainers.version>
 		<validation.version>3.1.0</validation.version>
 		<sonar.organization>sylvain-chu</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
