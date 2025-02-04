@@ -30,7 +30,7 @@ jobs:
           mvn clean install  # Clean the project and install dependencies, run tests
 
   build:
-    name: Build and analyze  # Job name
+    name: Sonar # Job name
     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
     needs: test-backend  # Ensure this job runs only after 'test-backend' is successful
 
