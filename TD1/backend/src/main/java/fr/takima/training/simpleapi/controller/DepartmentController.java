@@ -16,6 +16,7 @@ public class DepartmentController {
     private final DepartmentService departmentService;
     private final StudentService studentService;
 
+
     @Autowired
     public DepartmentController(DepartmentService departmentService, StudentService studentService) {
         this.departmentService = departmentService;
