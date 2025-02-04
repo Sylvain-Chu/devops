@@ -32,3 +32,7 @@ jobs:
           cd TD1/backend  # Aller dans le dossier backend
           mvn clean install  # Compiler et exécuter les tests Maven
 ```
+
+### **2-2 Document your Github Actions configurations**
+
+Pousser des images Docker permet de partager et déployer facilement son application sur différents serveurs ou machines. Cela permet aussi de faire en sorte que tout le monde utilise la même version de l'application.

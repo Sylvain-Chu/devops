@@ -20,6 +20,11 @@
 		<validation.version>3.1.0</validation.version>
 	</properties>
 
+	<properties>
+		<sonar.organization>sylvain-chu</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
