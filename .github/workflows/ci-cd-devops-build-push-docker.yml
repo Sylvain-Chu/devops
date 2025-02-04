@@ -7,7 +7,6 @@ on:
       - completed
     branches:
       - main
-      - develop
 
 jobs:
   build-and-push-docker-images:
