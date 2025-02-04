@@ -1,0 +1,53 @@
+name: CI/CD DevOps 2025 - Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_run:
+    workflows: ["CI/CD DevOps 2025 - Test Backend"]  # Spécifie le nom du workflow précédent
+    types:
+      - completed
+
+jobs:
+  build-and-push-docker-images:
+    needs: test-backend  # This job will only run if 'test-backend' job succeeds
+    runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
+
+    steps:
+      - name: Checkout repository  # Checkout the code from the repository
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub  # Log in to Docker Hub using credentials stored in secrets
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
+          password: ${{ secrets.DOCKERHUB_TOKEN }}  # Docker Hub token from secrets
+
+      # Build and push the backend Docker image
+      - name: Build and push backend image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/backend  # Directory containing the backend code
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-backend:latest  # Docker image tag
+          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
+
+      # Build and push the database Docker image
+      - name: Build and push database image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/db  # Directory containing the database code
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-db:latest  # Docker image tag
+          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
+
+      # Build and push the HTTP Docker image
+      - name: Build and push httpd image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/http  # Directory containing the HTTP service code
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http:latest  # Docker image tag
+          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
+
