@@ -29,6 +29,12 @@ jobs:
           cd TD1/backend  # Navigate to the backend directory
           mvn clean install  # Clean the project and install dependencies, run tests
 
+    if: failure()
+    steps:
+      - name: Fail the workflow
+        run: exit 1
+
+
   build:
     name: Sonar # Job name
     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
