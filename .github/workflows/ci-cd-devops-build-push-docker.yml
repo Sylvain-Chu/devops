@@ -5,44 +5,46 @@ on:
     workflows: ["CI/CD DevOps 2025 - Test Backend"]  # Spécifie le nom du workflow précédent
     types:
       - completed
-    branches: main
+    branches:
+      - main
+      - develop
 
 jobs:
   build-and-push-docker-images:
-    runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
-    if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.event != 'pull_request' # Vérifie si la branche est main
-    
+    runs-on: ubuntu-22.04
+    if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop'
+
     steps:
-      - name: Checkout repository  # Checkout the code from the repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Login to Docker Hub  # Log in to Docker Hub using credentials stored in secrets
+      - name: Extract version from pom.xml
+        id: get_version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -f TD1/backend/pom.xml)" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
-          password: ${{ secrets.DOCKERHUB_TOKEN }}  # Docker Hub token from secrets
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Build and push the backend Docker image
       - name: Build and push backend image
         uses: docker/build-push-action@v3
         with:
-          context: ./TD1/backend  # Directory containing the backend code
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-backend:latest  # Docker image tag
-          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
+          context: ./TD1/backend
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-backend:${{ env.VERSION }}
+          push: true
 
-      # Build and push the database Docker image
       - name: Build and push database image
         uses: docker/build-push-action@v3
         with:
-          context: ./TD1/db  # Directory containing the database code
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-db:latest  # Docker image tag
-          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
+          context: ./TD1/db
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-db:${{ env.VERSION }}
+          push: true
 
-      # Build and push the HTTP Docker image
       - name: Build and push httpd image
         uses: docker/build-push-action@v3
         with:
-          context: ./TD1/http  # Directory containing the HTTP service code
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http:latest  # Docker image tag
-          push: ${{ github.ref == 'refs/heads/main' }}  # Push image only if commit is on the 'main' branch
-
+          context: ./TD1/http
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http:${{ env.VERSION }}
+          push: true
