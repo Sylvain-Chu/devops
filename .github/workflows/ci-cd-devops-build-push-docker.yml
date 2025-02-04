@@ -14,7 +14,6 @@ on:
 
 jobs:
   build-and-push-docker-images:
-    needs: test-backend  # This job will only run if 'test-backend' job succeeds
     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
     if: github.event.workflow_run.head_branch == 'main' # Vérifie si la branche est main
     
