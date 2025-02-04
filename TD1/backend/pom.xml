@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>fr.takima.training</groupId>
 	<artifactId>simple-api</artifactId>
-	<version>0.0.16</version>
+	<version>0.0.15</version>
 	<name>simple-api</name>
 	<description>Simple API demo project for Spring Boot</description>
 
