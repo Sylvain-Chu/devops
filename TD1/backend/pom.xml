@@ -18,9 +18,6 @@
 		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 		<testcontainers.version>1.20.4</testcontainers.version>
 		<validation.version>3.1.0</validation.version>
-	</properties>
-
-	<properties>
 		<sonar.organization>sylvain-chu</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
