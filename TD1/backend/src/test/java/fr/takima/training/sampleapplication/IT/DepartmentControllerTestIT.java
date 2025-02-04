@@ -42,7 +42,7 @@ class DepartmentControllerTestIT {
         mockMvc.perform(get("/departments/ASI/students"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", equalTo(1)))
-                .andExpect(jsonPath("$[0].firstname", equalTo("Gautier")))
+                .andExpect(jsonPath("$[0].firstname", equalTo("Gautierr")))
                 .andExpect(jsonPath("$[1].lastname", equalTo("Le Bloas")))
                 .andExpect(jsonPath("$[1].department.id", equalTo(1)))
                 .andExpect(jsonPath("$[1].department.name", equalTo("ASI")));
