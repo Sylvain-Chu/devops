@@ -17,7 +17,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'amazoncorretto'
+          distribution: 'corretto'
           java-version: '21'
 
       - name: Build and test with Maven
