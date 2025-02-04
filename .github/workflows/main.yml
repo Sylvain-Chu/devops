@@ -1,4 +1,4 @@
-name: CI DevOps 2025
+name: CI/CD DevOps 2025
 
 on:
   push:
@@ -24,3 +24,35 @@ jobs:
         run: |
           cd TD1/backend
           mvn clean install
+
+  build-and-push-docker-images:
+    needs: test-backend 
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout reposcodeitory
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/backend
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-backend:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push database image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/db
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-db:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push httpd image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/http
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
