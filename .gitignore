@@ -31,7 +31,6 @@ pom.xml.releaseBackup
 release.properties
 
 # Docker
-**/Dockerfile
 **/docker-compose.yaml
 **/.dockerignore
 **/db/data/

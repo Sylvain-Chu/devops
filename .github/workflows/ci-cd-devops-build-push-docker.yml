@@ -1,13 +1,17 @@
 name: CI/CD DevOps 2025 - Build and Push Docker Images
 
 on:
-  workflow_run:
-    workflows: ["CI/CD DevOps 2025 - Test Backend"]  # Spécifie le nom du workflow précédent
-    types:
-      - completed
+  push:
     branches:
-      - main
       - develop
+      - main
+  # workflow_run:
+  #   workflows: ["CI/CD DevOps 2025 - Test Backend"]  # Spécifie le nom du workflow précédent
+  #   types:
+  #     - completed
+  #   branches:
+  #     - main
+  #     - develop
 
 jobs:
   build-and-push-docker-images:
