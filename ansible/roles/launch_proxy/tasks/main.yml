@@ -7,7 +7,7 @@
     pull: yes
     ports:
       - "80:80" 
-      - "8080:8081"
+      - "8080:8080"
     networks:
       - name: proxy_app_network
     container_default_behavior: compatibility

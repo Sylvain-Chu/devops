@@ -25,7 +25,7 @@ export default {
     };
   },
   mounted: function() {
-    fetch(`http://${process.env.VUE_APP_API_URL}/departments/`)
+    fetch(`http://${process.env.VUE_APP_API_URL}/departments`)
       .then(response => response.json())
       .then(data => (this.departments = data));
   }
