@@ -48,3 +48,10 @@ jobs:
           context: ./TD1/http
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http:${{ env.VERSION }}
           push: true
+
+      - name: Build and push front image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./TD1/front
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-front:${{ env.VERSION }}
+          push: true
