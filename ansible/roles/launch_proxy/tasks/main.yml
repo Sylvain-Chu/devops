@@ -3,12 +3,14 @@
   docker_container:
     name: httptp1
     image: sylvainchu/tp-devops-http:latest 
+    volumes:
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
     state: started
     pull: yes
     ports:
       - "80:80" 
+      - "8080:8081"
     networks:
       - name: proxy_app_network
-    restart_policy: always
     container_default_behavior: compatibility
     networks_cli_compatible: no
