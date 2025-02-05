@@ -1,13 +1,13 @@
+---
 - name: Launch application container
   docker_container:
     name: backtp1
     image: sylvainchu/tp-devops-backend:latest 
     state: started
+    pull: yes
     env_file: /home/admin/.env
-    ports:
-      - "8080:80"
     networks:
-      - name: my_network
-    restart_policy: always
+      - name: app_database_network
+      - name: proxy_app_network
     container_default_behavior: compatibility
     networks_cli_compatible: no

@@ -1,13 +1,14 @@
+---
 - name: Launch database container
   docker_container:
     name: tp1db
     image: sylvainchu/tp-devops-db:latest 
     state: started
+    pull: yes
     env_file: /home/admin/.env
-    ports:
-      - "3306:3306"
     networks:
-      - name: my_network
-    restart_policy: always
+      - name: app_database_network
     container_default_behavior: compatibility
     networks_cli_compatible: no
+    volumes:
+      - tp1db_data:/var/lib/postgresql/data 
