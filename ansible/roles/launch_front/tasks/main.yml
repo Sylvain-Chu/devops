@@ -3,7 +3,7 @@
 - name: Run front
   docker_container:
     name: front 
-    image: sylvainchu/tp-devops-front:latest
+    image: sylvainchu/tp-devops-front:0.0.15
     pull: yes
     env_file: /home/admin/.env
     networks:
