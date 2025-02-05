@@ -3,8 +3,6 @@
   docker_container:
     name: httptp1
     image: sylvainchu/tp-devops-http:latest 
-    volumes:
-      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
     state: started
     pull: yes
     ports:
