@@ -9,5 +9,6 @@
     networks:
       - name: app_database_network
       - name: proxy_app_network
+      - name: proxy_front_network
     container_default_behavior: compatibility
     networks_cli_compatible: no
