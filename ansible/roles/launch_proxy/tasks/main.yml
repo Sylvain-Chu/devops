@@ -2,7 +2,7 @@
 - name: Launch proxy container
   docker_container:
     name: httptp1
-    image: sylvainchu/tp-devops-http:latest 
+    image: sylvainchu/tp-devops-http:0.0.15
     state: started
     pull: yes
     ports:
