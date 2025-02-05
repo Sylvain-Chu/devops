@@ -1,0 +1,59 @@
+# Fichiers et dossiers spécifiques à Ansible
+ansible/id_rsa
+ansible/id_rsa.pub
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# Fichiers Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Fichiers Java/Maven
+*.class
+target/
+*.jar
+*.war
+*.ear
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+release.properties
+
+# Docker
+**/Dockerfile
+**/docker-compose.yaml
+**/.dockerignore
+**/db/data/
+**/db/init-scripts/
+**/backend/target/
+
+# Node.js (si jamais tu utilises du JS)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE / Editeurs
+.vscode/
+.idea/
+*.iml
+
+# Fichiers spécifiques aux systèmes UNIX/macOS
+*.out
+*.pid
+*.seed
+*.pid.lock
+
+# Divers
+*.env
+.env.local
