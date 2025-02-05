@@ -1,0 +1,15 @@
+all:
+  vars:
+    # Définition de l'utilisateur SSH par défaut pour tous les hôtes
+    ansible_user: admin
+
+    # Spécifie la clé privée SSH utilisée pour se connecter aux hôtes
+    ansible_ssh_private_key_file: id_rsa
+
+  children:
+    # Groupe d'hôtes pour l'environnement de production
+    prod:
+      hosts:
+        # Nom de l'hôte de production 
+        sylvain.churlet.takima.cloud:
+          ansible_python_interpreter: /usr/bin/python3

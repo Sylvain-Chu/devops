@@ -1,0 +1,13 @@
+---
+- name: Launch proxy container
+  docker_container:
+    name: httptp1
+    image: sylvainchu/tp-devops-http:latest 
+    state: started
+    ports:
+      - "80:80" 
+    networks:
+      - name: my_network 
+    restart_policy: always
+    container_default_behavior: compatibility
+    networks_cli_compatible: no

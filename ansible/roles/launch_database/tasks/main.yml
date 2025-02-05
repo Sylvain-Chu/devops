@@ -1,0 +1,13 @@
+- name: Launch database container
+  docker_container:
+    name: tp1db
+    image: sylvainchu/tp-devops-db:latest 
+    state: started
+    env_file: /home/admin/.env
+    ports:
+      - "3306:3306"
+    networks:
+      - name: my_network
+    restart_policy: always
+    container_default_behavior: compatibility
+    networks_cli_compatible: no

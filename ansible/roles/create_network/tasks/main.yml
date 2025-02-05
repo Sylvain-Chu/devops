@@ -1,0 +1,7 @@
+---
+# tasks file for create_network
+
+- name: Create Docker network
+  docker_network:
+    name: my_network
+    driver: bridge
