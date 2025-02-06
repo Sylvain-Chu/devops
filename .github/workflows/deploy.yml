@@ -10,7 +10,6 @@ on:
 jobs:
   run-ansible-playbook:
     runs-on: ubuntu-22.04
-    needs: build-and-push-docker-image
     steps:
       - uses: actions/checkout@v4
 
