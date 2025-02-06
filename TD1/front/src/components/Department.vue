@@ -2,7 +2,7 @@
   <div class="department">
     <a-row type="flex" justify="center">
       <a-col span="24">
-        <h1>Department: {{ name }}</h1>
+        <h1>Departmenttttttttttttttttttttttttttt: {{ name }}</h1>
       </a-col>
 
       <a-col span="24">
