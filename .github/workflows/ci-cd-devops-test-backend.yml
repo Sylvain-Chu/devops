@@ -1,65 +1,65 @@
-# name: CI/CD DevOps 2025 - Test Backend
+name: CI/CD DevOps 2025 - Test Backend
 
-# on:
-#   push:
-#     branches:
-#       - develop
-#       - main
-#   pull_request:
-#     branches:
-#       - develop
-#       - main
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
 
-# jobs:
-#   test-backend:
-#     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
+jobs:
+  test-backend:
+    runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
 
-#     steps:
-#       - name: Checkout repository  # Checkout the code from the repository
-#         uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository  # Checkout the code from the repository
+        uses: actions/checkout@v4
 
-#       - name: Set up JDK 21  # Set up Java Development Kit (JDK) version 21 with 'corretto' distribution
-#         uses: actions/setup-java@v3
-#         with:
-#           distribution: 'corretto'
-#           java-version: '21'
+      - name: Set up JDK 21  # Set up Java Development Kit (JDK) version 21 with 'corretto' distribution
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '21'
 
-#       - name: Build and test with Maven  # Build and test the backend code using Maven
-#         run: |
-#           cd TD1/backend  # Navigate to the backend directory
-#           mvn clean install  # Clean the project and install dependencies, run tests
+      - name: Build and test with Maven  # Build and test the backend code using Maven
+        run: |
+          cd TD1/backend  # Navigate to the backend directory
+          mvn clean install  # Clean the project and install dependencies, run tests
 
-#   build:
-#     name: Sonar # Job name
-#     runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
-#     needs: test-backend  # Ensure this job runs only after 'test-backend' is successful
+  build:
+    name: Sonar # Job name
+    runs-on: ubuntu-22.04  # Specifies the environment to run the job on (Ubuntu 22.04)
+    needs: test-backend  # Ensure this job runs only after 'test-backend' is successful
 
-#     steps:
-#       - uses: actions/checkout@v4  # Checkout the code from the repository
-#         with:
-#           fetch-depth: 0  # Ensure a full clone (no shallow clone) for better analysis
+    steps:
+      - uses: actions/checkout@v4  # Checkout the code from the repository
+        with:
+          fetch-depth: 0  # Ensure a full clone (no shallow clone) for better analysis
 
-#       - name: Set up JDK 21  # Set up JDK 21 with 'corretto' distribution for SonarQube analysis
-#         uses: actions/setup-java@v4
-#         with:
-#           java-version: 21
-#           distribution: 'corretto'  # Use 'corretto' JDK distribution
+      - name: Set up JDK 21  # Set up JDK 21 with 'corretto' distribution for SonarQube analysis
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'  # Use 'corretto' JDK distribution
 
-#       - name: Cache SonarQube packages  # Cache SonarQube dependencies to speed up analysis
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.sonar/cache  # Path to cache SonarQube data
-#           key: ${{ runner.os }}-sonar  # Cache key to uniquely identify the SonarQube cache
-#           restore-keys: ${{ runner.os }}-sonar  # Restore the cache from previous builds if available
+      - name: Cache SonarQube packages  # Cache SonarQube dependencies to speed up analysis
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache  # Path to cache SonarQube data
+          key: ${{ runner.os }}-sonar  # Cache key to uniquely identify the SonarQube cache
+          restore-keys: ${{ runner.os }}-sonar  # Restore the cache from previous builds if available
 
-#       - name: Cache Maven packages  # Cache Maven dependencies to avoid re-downloading them
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.m2  # Path to cache Maven dependencies
-#           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}  # Use 'pom.xml' files to generate a unique cache key
-#           restore-keys: ${{ runner.os }}-m2  # Restore the cache from previous Maven builds
+      - name: Cache Maven packages  # Cache Maven dependencies to avoid re-downloading them
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2  # Path to cache Maven dependencies
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}  # Use 'pom.xml' files to generate a unique cache key
+          restore-keys: ${{ runner.os }}-m2  # Restore the cache from previous Maven builds
 
-#       - name: Build and analyze  # Run Maven build and SonarQube analysis
-#         env:
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Use SonarQube token from GitHub secrets
-#         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Sylvain-Chu_devops -f TD1/backend/pom.xml  # Run SonarQube analysis on backend project
+      - name: Build and analyze  # Run Maven build and SonarQube analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Use SonarQube token from GitHub secrets
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Sylvain-Chu_devops -f TD1/backend/pom.xml  # Run SonarQube analysis on backend project

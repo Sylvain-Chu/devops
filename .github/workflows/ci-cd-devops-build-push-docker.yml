@@ -1,22 +1,18 @@
 name: CI/CD DevOps 2025 - Build and Push Docker Images
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI/CD DevOps 2025 - Test Backend"]
+    types:
+      - completed
     branches:
-      - develop
       - main
-  # workflow_run:
-  #   workflows: ["CI/CD DevOps 2025 - Test Backend"]  # Spécifie le nom du workflow précédent
-  #   types:
-  #     - completed
-  #   branches:
-  #     - main
-  #     - develop
+      - develop
 
 jobs:
   build-and-push-docker-images:
     runs-on: ubuntu-22.04
-    # if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop'
+    if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'develop'
 
     steps:
       - name: Checkout repository

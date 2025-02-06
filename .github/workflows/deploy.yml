@@ -1,0 +1,35 @@
+name: Push docker and deploy 
+on: 
+  workflow_run:
+    workflows: ["CI/CD DevOps 2025 - Test Backend"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+ 
+  run-ansible-playbook:
+    runs-on: ubuntu-22.04
+    needs: build-and-push-docker-image
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with: 
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Ajouter la clé SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ENV }}" > ~/.env
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Installer Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Exécuter le Playbook Ansible
+        run: |
+          ansible-playbook -i ansible/inventories/setup.yml ansible/inventories/playbook.yml

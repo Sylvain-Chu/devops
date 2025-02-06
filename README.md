@@ -259,7 +259,7 @@ networks:
 - Tous les services sont connectés au même réseau Docker (`app-network`), ce qui permet aux services de communiquer entre eux à l'aide de leurs noms de service (`backend`, `database`, etc.).
 
 
-### 1-9 Documenter les commandes de publication et les images publiées sur Docker Hub
+## 1-9 Documenter les commandes de publication et les images publiées sur Docker Hub
 
 #### Commandes pour publier l'image Docker
 
@@ -303,7 +303,7 @@ https://hub.docker.com/r/USERNAME/my-database/tags
 
 ---
 
-### 1-10 Pourquoi met-on nos images dans un dépôt en ligne ?
+## 1-10 Pourquoi met-on nos images dans un dépôt en ligne ?
 
 Mettre nos images Docker dans un dépôt en ligne comme Docker Hub ou un dépôt privé présente plusieurs avantages :
 
@@ -327,11 +327,11 @@ Mettre nos images Docker dans un dépôt en ligne comme Docker Hub ou un dépôt
 
 En résumé, publier tes images Docker sur un dépôt en ligne comme Docker Hub permet une meilleure collaboration, une gestion simplifiée des versions, et une intégration plus facile avec les autres services ou équipes.
 
-### **2-1 Qu'est-ce que Testcontainers ?**  
+## **2-1 Qu'est-ce que Testcontainers ?**  
 
 **Testcontainers** est une bibliothèque Java qui permet de créer des instances temporaires et jetables de bases de données, de courtiers de messages ou d'autres services via des conteneurs Docker, afin de faciliter les tests d'intégration.  
 
-### **2-2 Document your Github Actions configurations**
+## **2-2 Document your Github Actions configurations**
 
 ```yml
 name: CI DevOps 2025  # Nom du workflow
@@ -362,12 +362,12 @@ jobs:
           mvn clean install  # Compiler et exécuter les tests Maven
 ```
 
-### **2-3 For what purpose do we need to push docker images?**
+## **2-3 For what purpose do we need to push docker images?**
 
 Pousser des images Docker permet de partager et déployer facilement son application sur différents serveurs ou machines. Cela permet aussi de faire en sorte que tout le monde utilise la même version de l'application.
 
 
-### **2-4 Document your quality gate configuration**
+## **2-4 Document your quality gate configuration**
 
 ```yml
 name: CI/CD DevOps 2025
@@ -473,3 +473,74 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Use SonarQube token from GitHub secrets
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Sylvain-Chu_devops -f TD1/backend/pom.xml  # Run SonarQube analysis on backend project
 ```
+
+
+# 3-1 Document your inventory and base commands
+
+```yaml
+all:
+  vars:
+    # Définition de l'utilisateur SSH par défaut pour tous les hôtes
+    ansible_user: admin
+
+    # Spécifie la clé privée SSH utilisée pour se connecter aux hôtes
+    ansible_ssh_private_key_file: id_rsa
+
+  children:
+    # Groupe d'hôtes pour l'environnement de production
+    prod:
+      hosts:
+        # Nom de l'hôte de production 
+        sylvain.churlet.takima.cloud:
+          ansible_python_interpreter: /usr/bin/python3
+```
+
+
+# 3-2 Document your playbook
+
+```yaml
+# Install the necessary system packages for Docker
+- name: Deploy application with Docker
+  hosts: all
+  become: true
+# lance les rôles
+  roles:
+    # - install_docker
+    - copy_env_file 
+    - create_network
+    - launch_database
+    - launch_app
+    - launch_proxy
+    - launch_front
+```
+
+# 3-3 Document your docker_container tasks configuration.
+
+```yaml
+# Create and run the proxy container
+- name: Run proxy
+  docker_container:
+    name: httptp1 # The name of the container
+        image: sylvainchu/tp-devops-http:0.0.15 # Use the latest version of the proxy image
+    pull: yes # Always pull the latest version of the image before running
+    published_ports:
+      - "80:80" # Map port 80 on the host to port 80 in the container
+      - "8080:8081" # Map port 8080 on the host to port 8081 in the container
+    networks:
+      - name: proxy_app_network
+```
+
+```yaml
+# Create and run the database container
+- name: Run database
+  docker_container:
+    name: tp1db # The name of the database container
+    image: sylvainchu/tp-devops-db:latest  # Use the latest database image
+    pull: yes # Always pull the latest version of the image before running
+    env_file: /.env # Load environment variables from the .env file
+    networks:
+      - name: app_database_network # Connect the container to the 'app_database_network' network
+    volumes:
+        - tp1db_data:/var/lib/postgresql/data   
+```
+
