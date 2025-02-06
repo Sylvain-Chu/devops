@@ -11,24 +11,29 @@ jobs:
   run-ansible-playbook:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: 🛎 Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: webfactory/ssh-agent@v0.9.0
+      - name: 🔑 Ajouter la clé SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with: 
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Ajouter la clé SSH
+      - name: 📝 Créer le fichier .env
         run: |
-          echo "${{ secrets.ENV }}" > ./ansible/roles/copy_env_file/.env
-          pwd
+          echo "${{ secrets.ENV_FILE }}" > ansible/.env
+          ls -lah ansible/  # Debug: vérifier la présence de .env
+
+      - name: 📥 Vérifier et ajouter le serveur SSH
+        run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Installer Ansible
+      - name: 📦 Installer Ansible
         run: |
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Exécuter le Playbook Ansible
+      - name: 🚀 Exécuter le Playbook Ansible
         run: |
           ansible-playbook -i ansible/inventories/setup.yml ansible/inventories/playbook.yml
