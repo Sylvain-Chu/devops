@@ -3,5 +3,5 @@
 
 - name: Copy .env file to the server
   copy:
-    src: .env
+    src: ../../ansible/.env
     dest: /home/admin/.env

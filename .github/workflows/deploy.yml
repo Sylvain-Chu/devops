@@ -19,8 +19,9 @@ jobs:
 
       - name: Ajouter la clé SSH
         run: |
+          echo "${{ secrets.ENV }}" > ~.env
+          pwd
           mkdir -p ~/.ssh
-          echo "${{ secrets.ENV }}" > ansible/.env
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Installer Ansible
