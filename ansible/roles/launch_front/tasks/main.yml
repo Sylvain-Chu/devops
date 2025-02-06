@@ -7,6 +7,6 @@
     pull: yes
     env_file: /home/admin/.env
     networks:
-      - name: proxy_front_network
+      - name: proxy_app_network
     container_default_behavior: compatibility
     networks_cli_compatible: no
